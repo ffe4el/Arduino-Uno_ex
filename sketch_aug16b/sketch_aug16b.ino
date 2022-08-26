@@ -12,16 +12,20 @@
 #define WHITE 13
 #define LED 11
 //온습도센서 연결설정
-#define DHTPIN 3 //디지털 3번핀 사용
 #define DHTTYPE DHT11 // DHT 11 모델 사용
-
+#define DHTPIN 3 //디지털 3번핀 사용
 //위에꺼 실행안되면 3으로 다시 해보깅
 
+
+
+
+//DHT dht(DHTPIN,DHTTYPE);
+int HUMITEMP_IN=11;
+
+DHT dht(HUMITEMP_IN,DHTTYPE);
+
 //LCD 설정
-LiquidCrystal_I2C lcd(0x27,16,2);
-
-DHT dht(DHTPIN,DHTTYPE);
-
+LiquidCrystal_I2C lcd(0x27, 16,2);
 
 
 void setup() {
@@ -115,8 +119,6 @@ void loop() {
   
     Serial.println("C");
 
-
-
     lcd.setCursor(0,0);
     
     lcd.print("Humidity ");
@@ -129,19 +131,17 @@ void loop() {
     
     lcd.print("%");
 
-
-
-  lcd.setCursor(0,1);
-  
-  lcd.print("Temp ");
-  
-  lcd.setCursor(10,1);
-  
-  lcd.print((int)t);
-  
-  lcd.setCursor(13,1);
-  
-  lcd.print("C");
+    lcd.setCursor(0,1);
+    
+    lcd.print("Temp ");
+    
+    lcd.setCursor(10,1);
+    
+    lcd.print((int)t);
+    
+    lcd.setCursor(13,1);
+    
+    lcd.print("C");
 
   }
 
