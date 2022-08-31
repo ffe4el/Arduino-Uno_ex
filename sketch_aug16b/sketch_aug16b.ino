@@ -12,17 +12,11 @@
 #define WHITE 13
 #define LED 11
 //온습도센서 연결설정
-#define DHTTYPE DHT11 // DHT 11 모델 사용
 #define DHTPIN 3 //디지털 3번핀 사용
-//위에꺼 실행안되면 3으로 다시 해보깅
+#define DHTTYPE DHT11 // DHT 11 모델 사용
 
+DHT dht(DHTPIN,DHTTYPE);
 
-
-
-//DHT dht(DHTPIN,DHTTYPE);
-int HUMITEMP_IN=11;
-
-DHT dht(HUMITEMP_IN,DHTTYPE);
 
 //LCD 설정
 LiquidCrystal_I2C lcd(0x27, 16,2);
@@ -39,7 +33,6 @@ void setup() {
   
   Serial.println("DHT testing.....");
   dht.begin();
-  lcd.init();
   lcd.backlight();
   
 //  myRTC.setDS1302Time(00, 59, 23, 2, 4, 4, 2016); //초,분,시,요일,일,월,년
@@ -93,9 +86,9 @@ void loop() {
 
   delay(2000);
 
-  float h=dht.readHumidity();
+  float h = dht.readHumidity();
 
-  float t=dht.readTemperature();
+  float t = dht.readTemperature();
 
 
 
