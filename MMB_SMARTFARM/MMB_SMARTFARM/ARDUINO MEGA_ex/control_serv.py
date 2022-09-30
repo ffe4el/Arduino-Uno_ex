@@ -4,25 +4,22 @@ import serial.tools.list_ports
 import serial
 import time
 import threading
-
-
-
+import requests
+import numpy as np
+from matplotlib import pyplot as plt
+from matplotlib import animation
+import matplotlib
 from flask import Flask
 
-app = Flask
+app = Flask(__name__)
 #10번 포트에 연결된 serial을 s로 지정(채널:9600)
 s = serial.Serial('COM3', 9600)
+
 
 @app.route('/')
 def index():
     return 'Index Page'
 
-
-@app.route('/fan-on')
-def fan_on():
-    send_signal_to_sfarm("C_F-1")
-
-    return "Order Fan On"
 
 
 def send_signal_to_sfarm(msg):
@@ -43,6 +40,30 @@ def send_signal_to_sfarm(msg):
     if (s.readable()):
         s.write("{}\n".format(msg).encode())
 
+# def random_sinegraph():
+#     matplotlib.use('TkAgg')
+#     plt.rcParams["figure.figsize"] = [7.50, 3.50]
+#     plt.rcParams["figure.autolayout"] = True
+#
+#     temp_threshold = 28
+#
+#     fig = plt.figure()
+#     ax = plt.axes(xlim=(0, 2), ylim=(18, 32))
+#     ax.set_ylabel("Indoor temperature (degrees C)")
+#     ax.set_xlabel("time line")
+#     line, = ax.plot([], [], lw=2)
+#
+#     plt.axhline(y=temp_threshold, ls="--")
+#     line_color = "b"
+#     stage = -1
+
+@app.route('/fan-on')
+def fan_on():
+    send_signal_to_sfarm("C_F-1")
+
+    return "Order Fan On"
+
+
 
 @app.route('/fan-off')
 def fan_off():
@@ -59,10 +80,20 @@ def light_on(level):
 #     send_signal_to_sfarm("C_L-10")
 #     return "Order Light 10"
 
-
 @app.route('/light-off')
 def light_off():
     send_signal_to_sfarm("C_L-0")
     return "Order Light 0"
+
+@app.route('/window-open')
+def window_open():
+    send_signal_to_sfarm("C_S-1")
+    return "Order window open"
+
+@app.route('/window-close')
+def window_close():
+    send_signal_to_sfarm("C_S-0")
+    return "Order window close"
+
 
 app.run(host="0.0.0.0")
