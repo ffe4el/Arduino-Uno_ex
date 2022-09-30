@@ -1,7 +1,7 @@
 import time
 import requests
 
-SERVER_URL = "http://192.168.0.62:5000/"
+SERVER_URL = "http://192.168.0.66:5000/"
 
 
 def send_command(command):

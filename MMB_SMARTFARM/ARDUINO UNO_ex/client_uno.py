@@ -17,6 +17,7 @@ temp_threshold = 28
 fig = plt.figure()
 ax = plt.axes(xlim=(0, 2), ylim=(18, 32))
 ax.set_ylabel("Indoor temperature (degrees C)")
+ax.set_xlabel("time line")
 line, = ax.plot([], [], lw=2)
 
 plt.axhline(y=temp_threshold, ls="--")

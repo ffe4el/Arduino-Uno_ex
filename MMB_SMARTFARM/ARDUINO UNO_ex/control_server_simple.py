@@ -26,6 +26,9 @@ def index():
         <br>
         <li><a href="./white-on">white <b>ON</b></a></li>
         <li><a href="./white-off">white <b>OFF</b></a></li>
+        <br>
+        <li><a href="./led-on">led <b>ON</b></a></li>
+        <li><a href="./led-off">led <b>OFF</b></a></li>
     </ul>
     """
 
@@ -76,6 +79,21 @@ def white_on():
     send_signal_to_sfarm("W1")
     return index()
 
+@app.route('/white-off')
+def white_off():
+    send_signal_to_sfarm("W0")
+    return index()
+
+@app.route('/led-on')
+def led_on():
+    send_signal_to_sfarm("L1")
+    return index()
+
+@app.route('/led-off')
+def led_off():
+    send_signal_to_sfarm("L0")
+    return index()
+
 
 @app.route('/raw/<code>')
 def send_rawcode(code):
@@ -83,10 +101,7 @@ def send_rawcode(code):
     return index()
 
 
-@app.route('/white-off')
-def white_off():
-    send_signal_to_sfarm("W0")
-    return index()
+
 
 
 @app.route('/light-on/<level>')
