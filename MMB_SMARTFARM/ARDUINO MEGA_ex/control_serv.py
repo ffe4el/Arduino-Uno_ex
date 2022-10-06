@@ -10,6 +10,9 @@ from matplotlib import pyplot as plt
 from matplotlib import animation
 import matplotlib
 from flask import Flask
+import cam_python
+
+
 
 app = Flask(__name__)
 #10번 포트에 연결된 serial을 s로 지정(채널:9600)
@@ -18,7 +21,10 @@ s = serial.Serial('COM3', 9600)
 
 @app.route('/')
 def index():
-    return 'Index Page'
+    ca
+
+
+
 
 
 
