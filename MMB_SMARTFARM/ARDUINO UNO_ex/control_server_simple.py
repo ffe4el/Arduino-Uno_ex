@@ -9,7 +9,7 @@ from flask import Flask
 
 app = Flask(__name__)
 #10번 포트에 연결된 serial을 s로 지정(채널:9600)
-s = serial.Serial('COM6', 57600)
+s = serial.Serial('COM7', 9600)
 
 @app.route("/")
 def index():
