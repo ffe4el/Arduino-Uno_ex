@@ -64,16 +64,16 @@ def camera_local():
                 # Add Information on screen
                 if is_card == 0:
                     msg_card = "Card 1"
-                    send_signal_to_sfarm("C_F-1")
+                    # send_signal_to_sfarm("C_F-1")
                 elif is_card == 1:
                     msg_card = "Card 2"
-                    send_signal_to_sfarm("C_F-0")
+                    # send_signal_to_sfarm("C_F-0")
                 elif is_card == 2:
                     msg_card = "Card 3"
-                    send_signal_to_sfarm("C_S-0")
+                    # send_signal_to_sfarm("C_S-0")
                 else:
                     msg_card = "It's not card"
-                    send_signal_to_sfarm("C_S-1")
+                    # send_signal_to_sfarm("C_S-1")
 
                 msg_card += " ({:.1f})%".format(is_card_prob[is_card] * 100)
 
@@ -96,6 +96,15 @@ def camera_local():
 @app.route('/')
 @cross_origin(origin='*')
 def index():
+    if msg_card == "Card 1":
+        send_signal_to_sfarm("C_F-1")
+    elif msg_card == "Card 2":
+        send_signal_to_sfarm("C_F-0")
+    elif msg_card == "Card 3":
+        send_signal_to_sfarm("C_L-0")
+    elif msg_card == "It's not card":
+        send_signal_to_sfarm("C_L-5")
+
     return Response(camera_local(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
@@ -103,6 +112,15 @@ def index():
 @app.route("/current_msg")
 @cross_origin(origin='*')
 def current_msg():
+    # if msg_card == "Card 1":
+    #     send_signal_to_sfarm("C_F-1")
+    # elif msg_card == "Card 2":
+    #     send_signal_to_sfarm("C_F-0")
+    # elif msg_card == "Card 3":
+    #     send_signal_to_sfarm("C_L-0")
+    # elif msg_card == "It's not card":
+    #     send_signal_to_sfarm("C_L-5")
+
     return msg_card
 
 
