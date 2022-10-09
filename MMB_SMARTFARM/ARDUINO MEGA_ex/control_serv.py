@@ -64,18 +64,18 @@ def camera_local():
                 # Add Information on screen
                 if is_card == 0:
                     msg_card = "Card 1"
-                    # send_signal_to_sfarm("C_F-1")
+                    send_signal_to_sfarm("C_F-0")
                 elif is_card == 1:
                     msg_card = "Card 2"
-                    # send_signal_to_sfarm("C_F-0")
+                    send_signal_to_sfarm("C_L-10")
                 elif is_card == 2:
                     msg_card = "Card 3"
-                    # send_signal_to_sfarm("C_S-0")
+                    send_signal_to_sfarm("C_F-1")
                 else:
                     msg_card = "It's not card"
-                    # send_signal_to_sfarm("C_S-1")
+                    send_signal_to_sfarm("C_L-0")
 
-                msg_card += " ({:.1f})%".format(is_card_prob[is_card] * 100)
+                # msg_card += " ({:.1f})%".format(is_card_prob[is_card] * 100)
 
                 cv2.putText(frame, msg_card, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (225, 0, 0), thickness=2)
 
@@ -103,16 +103,8 @@ def index():
 @app.route("/current_msg")
 @cross_origin(origin='*')
 def current_msg():
-    if msg_card == "Card 1":
-        a = send_signal_to_sfarm("C_F-1")
-    elif msg_card == "Card 2":
-        a = send_signal_to_sfarm("C_F-0")
-    elif msg_card == "Card 3":
-        a = send_signal_to_sfarm("C_L-0")
-    elif msg_card == "It's not card":
-        a = send_signal_to_sfarm("C_L-5")
+    camera_local()
 
-    return a
 
 
 
@@ -134,6 +126,16 @@ def send_signal_to_sfarm(msg):
     if (s.readable()):
         s.write("{}\n".format(msg).encode())
 
+def load_env():
+    z = s.readline()
+    z = z.decode()[:len(z) - 1]
+    data = json.loads(z)
+    temp = int(data["temp"])
+    humid = int(data['humidity'])
+    cdc = int(data['cdc'])
+    print(temp, humid, cdc)
+    return temp, humid, cdc
+
 # def random_sinegraph():
 #     matplotlib.use('TkAgg')
 #     plt.rcParams["figure.figsize"] = [7.50, 3.50]
@@ -154,7 +156,7 @@ def send_signal_to_sfarm(msg):
 @app.route('/fan-on')
 def fan_on():
     send_signal_to_sfarm("C_F-1")
-
+    load_env()
     return "Order Fan On"
 
 

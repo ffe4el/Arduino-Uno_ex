@@ -26,6 +26,7 @@ import tensorflow as tf
 
 @app.route('/')
 def index():
+    load_env()
     return "index page"
 
 
@@ -43,17 +44,28 @@ def send_signal_to_sfarm(msg):
             if z.startswith("{ \"temp"):
                 data = json.loads(z)
                 temp = int(data["temp"])
+                # print(temp)
         else:
             break
     if (s.readable()):
         s.write("{}\n".format(msg).encode())
 
+def load_env():
+    z = s.readline()
+    z = z.decode()[:len(z) - 1]
+    data = json.loads(z)
+    temp = int(data["temp"])
+    humid = int(data['humidity'])
+    cdc = int(data['cdc'])
+    print(temp, humid, cdc)
+    return temp, humid, cdc
+
+
 @app.route('/fan-on')
 def fan_on():
     send_signal_to_sfarm("C_F-1")
-
+    load_env()
     return "Order Fan On"
-
 
 
 @app.route('/fan-off')
