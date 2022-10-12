@@ -15,8 +15,8 @@ from flask_cors import cross_origin
 
 
 app = Flask(__name__)
-#10번 포트에 연결된 serial을 s로 지정(채널:9600)
-s = serial.Serial('COM3', 9600)
+#3번 포트에 연결된 serial을 s로 지정(채널:9600)(COM3)
+s = serial.Serial('/dev/ttyACM0', 9600)
 
 msg_card = "Ready"
 
@@ -36,7 +36,7 @@ def camera_local():
     input_size = (224, 224)
 
     # Load the saved model
-    model = tf.keras.models.load_model("keras_model.h5", compile=False)
+    model = tf.keras.models.load_model("./keras_model.h5", compile=False)
 
 
     while True:

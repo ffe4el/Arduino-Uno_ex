@@ -109,6 +109,15 @@ void DoWPump1(int iPara){
            
 }
 
+void RgbLed(int iPara){
+  if(iPara ==0)
+    digitalWrite(RBG_R, 0);
+  else {
+    digitalWrite(RBG_R, 1);
+  }
+}
+
+
 void DoSMoter1(int iPara){
  if(iPara == 0) 
   angle = 10;
@@ -600,7 +609,7 @@ void loop() {
     Lux = (int)Ea ;
     
     cdcValue = (int)Lux;
-    //Serial.print(cdcValue); Serial.print(",");
+    Serial.print(cdcValue); Serial.print(",");
     
    float waterADC = analogRead(1);
     //Serial.print(waterADC); Serial.print(",");
