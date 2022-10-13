@@ -16,7 +16,7 @@ from flask_cors import cross_origin
 
 app = Flask(__name__)
 #3번 포트에 연결된 serial을 s로 지정(채널:9600)(COM3)
-s = serial.Serial('/dev/ttyACM0', 9600)
+s = serial.Serial('COM3', 9600)
 
 msg_card = "Ready"
 
