@@ -51,25 +51,27 @@ def send_signal_to_ssfarm(msg):
         time.sleep(0.2)
 
 
+
 def load_env():
     z = s.readline()
     z = z.decode()[:len(z) - 1]
     data = json.loads(z)
-    temp = int(data["temp"])
+    temp = int(data['temp'])
     humid = int(data['humidity'])
     cdc = int(data['cdc'])
     print(temp, humid, cdc)
     return temp, humid, cdc
 
-
 @app.route('/red-on')
 def red_on():
+    load_env()
     send_signal_to_ssfarm("R1")
     return index()
 
 
 @app.route('/summer')
 def fan_on():
+    load_env()
     send_signal_to_sfarm("C_F-1")
     send_signal_to_sfarm("C_S-1")
     send_signal_to_ssfarm("R1")
