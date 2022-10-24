@@ -9,14 +9,16 @@ from flask import Flask
 
 app = Flask(__name__)
 #10번 포트에 연결된 serial을 s로 지정(채널:9600)
-s = serial.Serial('COM7', 9600)
+s = serial.Serial('COM9', 9600)
 
 @app.route("/")
 def index():
     return """
     <ul>
-        <li><a href="./red-on">red <b>ON</b></a></li>
-        <li><a href="./red-off">red <b>OFF</b></a></li>
+        <li><a href="./red3">red <b>3</b></a></li>
+        <li><a href="./red2">red <b>2</b></a></li>
+        <li><a href="./red1">red <b>1</b></a></li>
+        <li><a href="./red0">red <b>0</b></a></li>
         <br>
         <li><a href="./yellow-on">yellow <b>ON</b></a></li>
         <li><a href="./yellow-off">yellow <b>OFF</b></a></li>
@@ -39,14 +41,33 @@ def send_signal_to_sfarm(msg):
         time.sleep(0.2)
 
 
-@app.route('/red-on')
-def red_on():
+# @app.route('/red-on')
+# def red_on():
+#     send_signal_to_sfarm("R1")
+#     return index()
+#
+#
+# @app.route('/red-off')
+# def red_off():
+#     send_signal_to_sfarm("R0")
+#     return index()
+@app.route('/red3')
+def red_3():
+    send_signal_to_sfarm("R3")
+    return index()
+
+@app.route('/red2')
+def red_2():
+    send_signal_to_sfarm("R2")
+    return index()
+
+@app.route('/red1')
+def red_1():
     send_signal_to_sfarm("R1")
     return index()
 
-
-@app.route('/red-off')
-def red_off():
+@app.route('/red0')
+def red_0():
     send_signal_to_sfarm("R0")
     return index()
 
