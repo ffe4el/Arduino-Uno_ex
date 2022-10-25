@@ -2,21 +2,13 @@
 import json
 import serial.tools.list_ports
 import serial
-import time
-import threading
-import requests
-import numpy as np
-from matplotlib import pyplot as plt
-from matplotlib import animation
-import matplotlib
-from flask import Flask, Response
+
+from flask import Flask
 # from cam_python import camera
-from flask_cors import cross_origin
 
 app = Flask(__name__)
 #10번 포트에 연결된 serial을 s로 지정(채널:9600)
 s = serial.Serial('COM3', 9600) #아두이노 메가
-ss = serial.Serial('COM6', 9600) #아두이노 우노
 
 @app.route('/')
 def index():
@@ -45,38 +37,38 @@ def send_signal_to_sfarm(msg):
         s.write("{}\n".format(msg).encode())
 
 
-def send_signal_to_ssfarm(msg):
-    if (ss.readable()):
-        ss.write("{}\n".format(msg).encode())
-        time.sleep(0.2)
+# def send_signal_to_ssfarm(msg):
+#     if (ss.readable()):
+#         ss.write("{}\n".format(msg).encode())
+#         time.sleep(0.2)
 
 
 
-def load_env():
-    z = s.readline()
-    z = z.decode()[:len(z) - 1]
-    data = json.loads(z)
-    temp = int(data['temp'])
-    humid = int(data['humidity'])
-    cdc = int(data['cdc'])
-    print(temp, humid, cdc)
-    return temp, humid, cdc
+# def load_env():
+#     z = s.readline()
+#     z = z.decode()[:len(z) - 1]
+#     data = json.loads(z)
+#     temp = int(data['temp'])
+#     humid = int(data['humidity'])
+#     cdc = int(data['cdc'])
+#     print(temp, humid, cdc)
+#     return temp, humid, cdc
 
 @app.route('/red-on')
 def red_on():
-    load_env()
-    send_signal_to_ssfarm("R1")
     return index()
 
 
-@app.route('/summer')
-def fan_on():
-    load_env()
-    send_signal_to_sfarm("C_F-1")
-    send_signal_to_sfarm("C_S-1")
-    send_signal_to_ssfarm("R1")
-    return "Order Fan On"
+# @app.route('/summer')
+# def fan_on():
+#     send_signal_to_sfarm("C_F-1")
+#     send_signal_to_sfarm("C_S-1")
+#     return "Order Fan On"
 
+@app.route('/fan-on')
+def fan_on():
+    send_signal_to_sfarm("C_F-1")
+    return "Order Fan On"
 
 @app.route('/fan-off')
 def fan_off():
