@@ -51,6 +51,8 @@ int gYear, gMonth, date, DoW, gHour, gMinute, gSecond;
 int prehour = -1;
 DS3231 Clock;
 
+char trash;
+
  //  Scheduling [DO] Function
 #define SCH_DO_LIGHT_CH   1
 #define SCH_DO_WPUMP_CH   2
@@ -609,7 +611,7 @@ void loop() {
     Lux = (int)Ea ;
     
     cdcValue = (int)Lux;
-    Serial.print(cdcValue); Serial.print(",");
+    //Serial.print(cdcValue); Serial.print(",");
     
    float waterADC = analogRead(1);
     //Serial.print(waterADC); Serial.print(",");
@@ -662,7 +664,7 @@ void loop() {
 
   
 
-   if((timeout %4)==1) {
+   if((timeout %5)==1) {
 
      memset(sData, 0x00, 128);
      sprintf(sData, "{ \"temp\":%d,\"humidity\":%d,\"cdc\":%d,\"water\":%d,\"co2\":%d, \"pt100\":%d, \"ph\":%d.%d }", 
@@ -674,78 +676,106 @@ void loop() {
         
       Serial.println(sData);
       // Bluetooth Data Sending
-      Serial.println(sData);
+      //Serial.println(sData);
    }  
   // Bluetooth Control
   while(0 < Serial.available()) 
   {
-    char ch = Serial.read();
-    rData[rPos] = ch; rPos += 1;
-    Serial.print(ch);
-
-    if(ch == '\n')
-    {         
-#if DEBUG
-      Serial.print("rPos=");
-      Serial.print(rPos);
-      Serial.print(" ");
-      Serial.println(rData);
-#endif
-  
-      if(memcmp(rData, "C_S-", 4) == 0)
-      {
-        if(rData[4] == '0') motorval = 10;
-        else motorval = 80;
-        servo.attach(SERVOPIN);
-        servo.write(motorval); 
-        delay(500);
-        servo.detach();
-#if DEBUG
-        Serial.print("server_f_MOTOR=");
-        Serial.println(motorval);
-#endif
-      }
-  
-      if(memcmp(rData, "C_F-", 4) == 0)
-      {
-        if(rData[4] == '0') digitalWrite(FAN_PIN, 0);
-        else digitalWrite(FAN_PIN, 1);
-#if DEBUG
-        Serial.print("FAN=");
-        Serial.println(rData[4]);
-#endif
-      }
-  
-      if(memcmp(rData, "C_L-", 4) == 0)
-      {
-        int light = atoi(rData+4);
-        analogWrite(LIGHTPIN, (int)(25 * light));
-#if DEBUG
-        Serial.print("LIGHT=");
-        Serial.println(25 * light); // light);
-#endif
-      }
-  
-      if(memcmp(rData, "C_W-", 4) == 0)
-      {
-        if(rData[4] == '0') digitalWrite(WATER_PUMP_PIN, 0);
-        //else digitalWrite(WATER_PUMP_PIN, 1);
-        else {
-          digitalWrite(WATER_PUMP_PIN, 1);
-          water_State = true;
+        String strRead = Serial.readStringUntil("\n");
+        if (strRead.indexOf("C_S-") >= 0) {
+          if(strRead[strRead.indexOf("C_S-")+4] == '0') motorval = 10;
+          else motorval = 80;
+          servo.attach(SERVOPIN);
+          servo.write(motorval); 
+          delay(500);
+          servo.detach();
+        } else if (strRead.indexOf("C_F-") >= 0) {
+          if(strRead[strRead.indexOf("C_F-") + 4] == '0') digitalWrite(FAN_PIN, 0);
+          else digitalWrite(FAN_PIN, 1);
+        } else if (strRead.indexOf("C_L-") >= 0) {
+//          int light = atoi(strRead[4]);
+          int light = strRead.substring(strRead.indexOf("C_L-")+4, strRead.indexOf("C_L-")+5).toInt();
+          analogWrite(LIGHTPIN, (int)(25 * light));
+        } else if (strRead.indexOf("C_W-") >= 0) {
+          if(strRead[strRead.indexOf("C_W-")+4] == '0') digitalWrite(WATER_PUMP_PIN, 0);
+          else {
+            digitalWrite(WATER_PUMP_PIN, 1);
+            water_State = true;
           }
-#if DEBUG
-        Serial.print("WATER=");
-        Serial.println(rData[4]);
-#endif
-      }
-  
-      rPos = 0;
-      memset(rData, 0x00,32);
-      break;
-    }
-    delay(10);
+        }
+//
+//    char ch = Serial.read();
+//    rData[rPos] = ch; rPos += 1;
+//    Serial.print(ch);
+//
+//    if(ch == '\n')
+//    {         
+//#if DEBUG
+//      Serial.print("rPos=");
+//      Serial.print(rPos);
+//      Serial.print(" ");
+//      Serial.println(rData);
+//#endif
+//  
+//      if(memcmp(rData, "C_S-", 4) == 0)
+//      {
+//        if(rData[4] == '0') motorval = 10;
+//        else motorval = 80;
+//        servo.attach(SERVOPIN);
+//        servo.write(motorval); 
+//        delay(500);
+//        servo.detach();
+//#if DEBUG
+//        Serial.print("server_f_MOTOR=");
+//        Serial.println(motorval);
+//#endif
+//      }
+//  
+//      if(memcmp(rData, "C_F-", 4) == 0)
+//      {
+//        if(rData[4] == '0') digitalWrite(FAN_PIN, 0);
+//        else digitalWrite(FAN_PIN, 1);
+//#if DEBUG
+//        Serial.print("FAN=");
+//        Serial.println(rData[4]);
+//#endif
+//      }
+//  
+//      if(memcmp(rData, "C_L-", 4) == 0)
+//      {
+//        int light = atoi(rData+4);
+//        analogWrite(LIGHTPIN, (int)(25 * light));
+//#if DEBUG
+//        Serial.print("LIGHT=");
+//        Serial.println(25 * light); // light);
+//#endif
+//      }
+//  
+//      if(memcmp(rData, "C_W-", 4) == 0)
+//      {
+//        if(rData[4] == '0') digitalWrite(WATER_PUMP_PIN, 0);
+//        //else digitalWrite(WATER_PUMP_PIN, 1);
+//        else {
+//          digitalWrite(WATER_PUMP_PIN, 1);
+//          water_State = true;
+//          }
+//#if DEBUG
+//        Serial.print("WATER=");
+//        Serial.println(rData[4]);
+//#endif
+//      }
+//  
+//      rPos = 0;
+//      memset(rData, 0x00,32);
+//      break;
+//    }
+//    delay(10);
   }
+
+//  while ( trash != 0 ){
+//    trash = Serial.read();
+//  }
+  Serial.flush();
 
 
 
@@ -775,19 +805,19 @@ void loop() {
     // 시간 읽음 --> hour
   ReadDS3231();
  
-  //시간이 바뀌는지 확인 (prehour = 9, hour = 10)
-  if (prehour != gHour){
-    // 정의된 스케줄 중에 그 시간이 있는지 확인
-   int iTime = SearchingAction();
-    // prehour를 다시 설정
-   prehour = gHour;
-    // 정의된 스케줄 중에 그 시간이 있을 때만 DoAction
-   if(iTime != -1){
-     DoAction(Set_Shedule[iTime].iDoing, 
-     Set_Shedule[iTime].iParameter);   
-    }
-  }
+//  //시간이 바뀌는지 확인 (prehour = 9, hour = 10)
+//  if (prehour != gHour){
+//    // 정의된 스케줄 중에 그 시간이 있는지 확인
+//   int iTime = SearchingAction();
+//    // prehour를 다시 설정
+//   prehour = gHour;
+//    // 정의된 스케줄 중에 그 시간이 있을 때만 DoAction
+//   if(iTime != -1){
+//     DoAction(Set_Shedule[iTime].iDoing, 
+//     Set_Shedule[iTime].iParameter);   
+//    }
+//  }
   
       
-  delay(100); 
+  delay(20); 
 }

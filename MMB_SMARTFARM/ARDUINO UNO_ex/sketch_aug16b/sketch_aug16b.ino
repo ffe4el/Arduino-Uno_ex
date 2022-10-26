@@ -56,6 +56,8 @@ void loop() {
     } else if (strRead.indexOf("W0") >= 0) {
       digitalWrite(WHITE, LOW);
     }
-  delay(200);
   }
+  Serial.flush();
+  delay(20);
+
 }
